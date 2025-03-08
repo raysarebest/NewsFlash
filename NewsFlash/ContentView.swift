@@ -9,13 +9,27 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        if let info = Bundle.main.infoDictionary {
+            if let keyData = info["NFNewsAPIKey"] {
+                if let key = keyData as? String {
+                    if !key.isEmpty {
+                        Text(key)
+                    }
+                    else {
+                        Text(verbatim: "Key empty")
+                    }
+                }
+                else {
+                    Text(verbatim: "Key in wrong format")
+                }
+            }
+            else {
+                Text(verbatim: "No key")
+            }
         }
-        .padding()
+        else {
+            Text(verbatim: "No info")
+        }
     }
 }
 

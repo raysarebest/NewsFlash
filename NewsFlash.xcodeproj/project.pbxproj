@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4C390BC32D7C6D360024625E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4C390BC22D7C6D360024625E /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4C390B9C2D7B7F530024625E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,11 +31,25 @@
 		4C390B8A2D7B7F520024625E /* NewsFlash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewsFlash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C390B9B2D7B7F530024625E /* NewsFlashTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NewsFlashTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C390BA52D7B7F530024625E /* NewsFlashUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NewsFlashUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C390BC22D7C6D360024625E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4C390BBF2D7C68DA0024625E /* Exceptions for "NewsFlash" folder in "NewsFlash" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 4C390B892D7B7F520024625E /* NewsFlash */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4C390B8C2D7B7F520024625E /* NewsFlash */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4C390BBF2D7C68DA0024625E /* Exceptions for "NewsFlash" folder in "NewsFlash" target */,
+			);
 			path = NewsFlash;
 			sourceTree = "<group>";
 		};
@@ -75,6 +93,7 @@
 		4C390B812D7B7F520024625E = {
 			isa = PBXGroup;
 			children = (
+				4C390BC22D7C6D360024625E /* README.md */,
 				4C390B8C2D7B7F520024625E /* NewsFlash */,
 				4C390B9E2D7B7F530024625E /* NewsFlashTests */,
 				4C390BA82D7B7F530024625E /* NewsFlashUITests */,
@@ -212,6 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C390BC32D7C6D360024625E /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +291,8 @@
 /* Begin XCBuildConfiguration section */
 		4C390BAD2D7B7F530024625E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 4C390B8C2D7B7F520024625E /* NewsFlash */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -327,11 +349,14 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		4C390BAE2D7B7F530024625E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 4C390B8C2D7B7F520024625E /* NewsFlash */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -380,6 +405,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -394,6 +420,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"NewsFlash/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NewsFlash/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -431,6 +458,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"NewsFlash/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NewsFlash/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
