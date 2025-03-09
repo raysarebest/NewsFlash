@@ -17,6 +17,9 @@ struct ArticleCard: View {
             Thumbnail(imageURL: article.imageURL)
 
             VStack(alignment: .leading, spacing: 8) {
+                Text(article.publishedAt.formatted())
+                    .foregroundStyle(.tertiary)
+                
                 Text(article.title)
                     .font(.headline)
                     .lineLimit(titleLineLimit)
@@ -25,7 +28,7 @@ struct ArticleCard: View {
                 if let description = article.description {
                     Text(description)
                         .font(.body)
-                        .lineLimit(4)
+                        .lineLimit(3)
                         .foregroundStyle(.secondary)
                 }
             
@@ -60,11 +63,23 @@ struct ArticleCard: View {
     var titleLineLimit: Int {
         get {
             return if article.description?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true { // If there's no content to show
-                6
+                5
             }
             else {
                 2
             }
         }
     }
+}
+
+#Preview {
+    let articles = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        
+        return try! decoder.decode([Article].self, from: NSDataAsset(name: "Articles")!.data)
+    }()
+    
+    ArticleCard(article: articles.first!)
+        .frame(width: 200, height: 400)
 }

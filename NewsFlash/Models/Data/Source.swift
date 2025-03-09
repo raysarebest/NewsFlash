@@ -6,7 +6,7 @@
 //
 
 extension Article {
-    struct Source: Decodable, Identifiable {
+    struct Source: Decodable {
         let id: String?
         let name: String
     }

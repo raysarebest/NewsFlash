@@ -21,3 +21,7 @@ struct SafariView: UIViewControllerRepresentable {
     
     func updateUIViewController(_ controller: UIViewControllerType, context: Context) {}
 }
+
+#Preview {
+    SafariView(url: URL(string: "https://www.cleferpiano.app")!)
+}

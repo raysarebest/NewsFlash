@@ -11,7 +11,7 @@ import SwiftUI
 struct NewsFlashApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ArticleListView()
         }
     }
 }

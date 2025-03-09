@@ -1,9 +1,0 @@
-{
-  "sourceLanguage" : "en",
-  "strings" : {
-    "newsapi.decoder.error.unexpected-status %@" : {
-
-    }
-  },
-  "version" : "1.0"
-}
