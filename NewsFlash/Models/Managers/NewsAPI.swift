@@ -9,16 +9,26 @@ import Foundation
 import Observation
 
 @Observable class NewsAPI {
+    
+    // MARK: - Properties
+    
+    // MARK: Data
+    
     private(set) var articles = [Article]()
-    private(set) var nextPageOrdinal = startPageOrdinal
     private(set) var hasReachedEnd = false
     
-    private static let startPageOrdinal = 1
+    // MARK: Dependencies
+    
     private static let baseURL = URL(string: "https://newsapi.org/v2/top-headlines")! // Force-unwrapping is safe since the URL is hand-typed and known to be good
     
     private let backendAPIKey: String
     private let bundle: Bundle
     let networkSession: any DataLoader
+    
+    // MARK: Paging
+    
+    @ObservationIgnored private(set) var nextPageOrdinal = startPageOrdinal
+    private static let startPageOrdinal = 1
     
     @ObservationIgnored var pageSize = 20 {
         didSet {
@@ -28,11 +38,15 @@ import Observation
         }
     }
     
-    init<Network: DataLoader>(bundle: Bundle = .main, networkSession: Network = URLSession.shared) {
+    // MARK: - Initializers
+    
+    init<Network: DataLoader>(bundle: Bundle = .main, networkSession: Network = URLSession(configuration: .ephemeral)) {
         self.bundle = bundle
         self.backendAPIKey = bundle.infoDictionary!["NFNewsAPIKey"] as! String // Force-unwrapping is safe because the bundle is made at compile-time and it's therefore a programmer error for these to fail, meaning this is an appropriate situation to crash instead of error
         self.networkSession = networkSession
     }
+    
+    // MARK: - Data Loading
     
     func loadNextPage() async throws {
         
@@ -83,6 +97,8 @@ import Observation
         }
     }
 }
+
+// MARK: - Helper Types
 
 extension NewsAPI {
     private struct ResultPage: Decodable {
