@@ -17,7 +17,8 @@ import Observation
     private static let baseURL = URL(string: "https://newsapi.org/v2/top-headlines")! // Force-unwrapping is safe since the URL is hand-typed and known to be good
     
     private let backendAPIKey: String
-    let networkSession: URLSession
+    private let bundle: Bundle
+    let networkSession: any DataLoader
     
     @ObservationIgnored var pageSize = 20 {
         didSet {
@@ -27,8 +28,9 @@ import Observation
         }
     }
     
-    init(backendAPIKey: String, networkSession: URLSession = .shared) {
-        self.backendAPIKey = backendAPIKey
+    init<Network: DataLoader>(bundle: Bundle = .main, networkSession: Network = URLSession.shared) {
+        self.bundle = bundle
+        self.backendAPIKey = bundle.infoDictionary!["NFNewsAPIKey"] as! String // Force-unwrapping is safe because the bundle is made at compile-time and it's therefore a programmer error for these to fail, meaning this is an appropriate situation to crash instead of error
         self.networkSession = networkSession
     }
     
@@ -50,7 +52,7 @@ import Observation
     
     private var nextPage: ResultPage {
         get async throws {
-            let preferredLanguage = Bundle.preferredLocalizations(from: ["ar", "de", "en", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud", "zh"]).first ?? Bundle.main.developmentLocalization ?? "en"
+            let preferredLanguage = type(of: bundle).preferredLocalizations(from: ["ar", "de", "en", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud", "zh"]).first ?? bundle.developmentLocalization ?? "en" // Languages retrieved from https://newsapi.org/docs/endpoints/everything on March 9, 2025 at 11:33 PM CEST
             let (pageData, rawResponse) = try await networkSession.data(from: Self.baseURL.appending(queryItems: [URLQueryItem(name: "apiKey", value: backendAPIKey),
                                                                                                                   URLQueryItem(name: "page", value: String(nextPageOrdinal)),
                                                                                                                   URLQueryItem(name: "pageSize", value: String(pageSize)),

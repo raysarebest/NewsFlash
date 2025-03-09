@@ -10,7 +10,7 @@ import SafariServices
 
 struct ArticleListView: View {
     
-    @State private var backend = NewsAPI(backendAPIKey: Bundle.main.infoDictionary!["NFNewsAPIKey"] as! String) // Force-unwrapping is safe because these are defined at compile-time and counts as a programmer error if it's missing
+    @State private var backend = NewsAPI()
     @State private var loadingTask: Task<Void, any Error>? = nil
     @State private var lastError: (any Error)? = nil
     @State private var currentArticle: Article? = nil
