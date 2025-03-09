@@ -15,21 +15,31 @@ struct ContentView: View {
     @State private var lastError: (any Error)? = nil
     @State private var currentArticle: Article? = nil
     
+//    @SceneStorage("lastRefresh") private var lastRefresh = Date.distantPast
+//    @Environment(\.calendar) private var calendar
+    
     var body: some View {
-        ScrollViewReader { scrollProxy in
+        GeometryReader { geometry in
             ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 200)), count: 2)) {
+                LazyVGrid(columns: Array(repeating: GridItem(.fixed(geometry.size.width / 2 - 12), spacing: 8, alignment: .top), count: 2)) {
                     ForEach(backend.articles) { article in
                         Button {
                             currentArticle = article
                         } label: {
-                            VStack {
-                                AsyncImage(url: article.imageURL)
-                                Text(article.title)
-                                    .font(.headline)
-                            }
+                            ArticleCard(article: article)
                         }
+                        .buttonStyle(.plain)
                     }
+                }
+                .padding(.horizontal, 8)
+                
+                if !backend.hasReachedEnd {
+                    ProgressView()
+                        .padding()
+                        .onAppear {
+                            print("MHDEBUG: Loading next page")
+                            load(task: backend.loadNextPage)
+                        }
                 }
             }
             .refreshable {
@@ -37,8 +47,16 @@ struct ContentView: View {
             }
             .sheet(item: $currentArticle) { article in
                 SafariView(url: article.url)
+                    .ignoresSafeArea()
             }
         }
+//        .onAppear {
+//            let refreshMinuteThreshold = 20
+//            let refreshThreshold = calendar.date(byAdding: DateComponents(minute: refreshMinuteThreshold), to: lastRefresh) ?? lastRefresh + TimeInterval(refreshMinuteThreshold * 60) // 20 minutes calculated the right way if possible, or 20 minutes in seconds if not
+//            if backend.articles.isEmpty && !backend.hasReachedEnd || refreshThreshold < .now {
+//                load(task: backend.refresh)
+//            }
+//        }
     }
     
     var errorIsPresented: Binding<Bool> {
@@ -59,7 +77,7 @@ struct ContentView: View {
             do {
                 try await task()
             } catch let error {
-                lastError = dump(error)
+                lastError = error
             }
         }
     }

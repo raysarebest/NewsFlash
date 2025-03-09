@@ -13,8 +13,11 @@ struct SafariView: UIViewControllerRepresentable {
     let url: URL
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        return SFSafariViewController(url: url)
-    }
+        let configuration = SFSafariViewController.Configuration()
+        configuration.barCollapsingEnabled = false
+        configuration.entersReaderIfAvailable = true
+        
+        return SFSafariViewController(url: url, configuration: configuration)    }
     
     func updateUIViewController(_ controller: UIViewControllerType, context: Context) {}
 }
