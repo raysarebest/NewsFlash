@@ -10,10 +10,10 @@ import Observation
 
 @Observable class NewsAPI {
     private(set) var articles = [Article]()
-    private(set) var nextPage = startPage
+    private(set) var nextPageOrdinal = startPageOrdinal
     private(set) var hasReachedEnd = false
     
-    private static let startPage = 1
+    private static let startPageOrdinal = 1
     private static let baseURL = URL(string: "https://newsapi.org/v2/top-headlines")! // Force-unwrapping is safe since the URL is hand-typed and known to be good
     
     private let backendAPIKey: String
@@ -22,7 +22,8 @@ import Observation
     @ObservationIgnored var pageSize = 20 {
         didSet {
             articles = []
-            nextPage = Self.startPage
+            nextPageOrdinal = Self.startPageOrdinal
+            hasReachedEnd = false
         }
     }
     
@@ -32,40 +33,52 @@ import Observation
     }
     
     func loadNextPage() async throws {
-        let preferredLanguage = Bundle.preferredLocalizations(from: ["ar", "de", "en", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud", "zh"]).first ?? Bundle.main.developmentLocalization ?? "en"
-        let (pageData, rawResponse) = try await networkSession.data(from: Self.baseURL.appending(queryItems: [URLQueryItem(name: "apiKey", value: backendAPIKey),
-                                                                                                              URLQueryItem(name: "page", value: String(nextPage)),
-                                                                                                              URLQueryItem(name: "pageSize", value: String(pageSize)),
-                                                                                                              URLQueryItem(name: "language", value: preferredLanguage)]))
         
-        guard let response = rawResponse as? HTTPURLResponse else {
-            throw LoadingError.unexpectedResponseFormat
+        guard !hasReachedEnd else {
+            return
         }
         
-        guard (200..<300).contains(response.statusCode) else {
-            throw LoadingError.requestUnsuccessful(httpCode: response.statusCode)
-        }
-        
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        let page = try decoder.decode(ResultPage.self, from: pageData)
-        
-        articles += page.articles
-        
-        let ended = pageSize * nextPage >= page.totalResults
-        
-        if !ended {
-            nextPage += 1
-        }
-        
-        hasReachedEnd = ended
+        articles += try await nextPage.articles
     }
     
     func refresh() async throws {
-        nextPage = Self.startPage
+        nextPageOrdinal = Self.startPageOrdinal
         hasReachedEnd = false
         
-        try await loadNextPage()
+        articles = try await nextPage.articles
+    }
+    
+    private var nextPage: ResultPage {
+        get async throws {
+            let preferredLanguage = Bundle.preferredLocalizations(from: ["ar", "de", "en", "es", "fr", "he", "it", "nl", "no", "pt", "ru", "sv", "ud", "zh"]).first ?? Bundle.main.developmentLocalization ?? "en"
+            let (pageData, rawResponse) = try await networkSession.data(from: Self.baseURL.appending(queryItems: [URLQueryItem(name: "apiKey", value: backendAPIKey),
+                                                                                                                  URLQueryItem(name: "page", value: String(nextPageOrdinal)),
+                                                                                                                  URLQueryItem(name: "pageSize", value: String(pageSize)),
+                                                                                                                  URLQueryItem(name: "language", value: preferredLanguage)]))
+            try Task.checkCancellation()
+            
+            guard let response = rawResponse as? HTTPURLResponse else {
+                throw LoadingError.unexpectedResponseFormat
+            }
+            
+            guard (200..<300).contains(response.statusCode) else {
+                throw LoadingError.requestUnsuccessful(httpCode: response.statusCode)
+            }
+            
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let page = try decoder.decode(ResultPage.self, from: pageData)
+            
+            let ended = pageSize * nextPageOrdinal >= page.totalResults
+            
+            if !ended {
+                nextPageOrdinal += 1
+            }
+            
+            hasReachedEnd = ended
+            
+            return page
+        }
     }
 }
 

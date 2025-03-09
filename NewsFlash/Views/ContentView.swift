@@ -15,8 +15,8 @@ struct ContentView: View {
     @State private var lastError: (any Error)? = nil
     @State private var currentArticle: Article? = nil
     
-//    @SceneStorage("lastRefresh") private var lastRefresh = Date.distantPast
-//    @Environment(\.calendar) private var calendar
+    @SceneStorage("lastRefresh") private var lastRefresh = Date.distantPast
+    @Environment(\.calendar) private var calendar
     
     var body: some View {
         GeometryReader { geometry in
@@ -27,6 +27,11 @@ struct ContentView: View {
                             currentArticle = article
                         } label: {
                             ArticleCard(article: article)
+                                .onAppear {
+                                    if article.id == backend.articles.last?.id {
+                                        load(task: backend.loadNextPage)
+                                    }
+                                }
                         }
                         .buttonStyle(.plain)
                     }
@@ -36,10 +41,6 @@ struct ContentView: View {
                 if !backend.hasReachedEnd {
                     ProgressView()
                         .padding()
-                        .onAppear {
-                            print("MHDEBUG: Loading next page")
-                            load(task: backend.loadNextPage)
-                        }
                 }
             }
             .refreshable {
@@ -50,13 +51,13 @@ struct ContentView: View {
                     .ignoresSafeArea()
             }
         }
-//        .onAppear {
-//            let refreshMinuteThreshold = 20
-//            let refreshThreshold = calendar.date(byAdding: DateComponents(minute: refreshMinuteThreshold), to: lastRefresh) ?? lastRefresh + TimeInterval(refreshMinuteThreshold * 60) // 20 minutes calculated the right way if possible, or 20 minutes in seconds if not
-//            if backend.articles.isEmpty && !backend.hasReachedEnd || refreshThreshold < .now {
-//                load(task: backend.refresh)
-//            }
-//        }
+        .onAppear {
+            let refreshMinuteThreshold = 20
+            let refreshThreshold = calendar.date(byAdding: DateComponents(minute: refreshMinuteThreshold), to: lastRefresh) ?? lastRefresh + TimeInterval(refreshMinuteThreshold * 60) // 20 minutes calculated the right way if possible, or 20 minutes in seconds if not
+            if backend.articles.isEmpty && !backend.hasReachedEnd || refreshThreshold < .now {
+                load(task: backend.refresh)
+            }
+        }
     }
     
     var errorIsPresented: Binding<Bool> {
