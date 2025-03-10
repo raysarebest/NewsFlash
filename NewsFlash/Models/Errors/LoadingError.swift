@@ -8,11 +8,11 @@
 import Foundation
 
 extension NewsAPI {
-    enum LoadingError: Error {
+    enum LoadingError: LocalizedError {
         case unexpectedResponseFormat
         case requestUnsuccessful(httpCode: Int)
         
-        var localizedDescription: String {
+        var errorDescription: String? {
             get {
                 return switch self {
                     case .unexpectedResponseFormat :
